@@ -25,23 +25,25 @@
 </head>
 
 <body>
-    <section class="vh-100" style="background-color: #e2d5de;">
+    <section class="vh-100" style="background-color: #a1683a">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col col-xl-10">
                     <div class="card" style="border-radius: 15px;">
                         <div class="card-body p-5">
-                            <h6 class="mb-3">My Todo List</h6>
+                            <h6 class="display-6">Todo List</h6>
                             <form class="d-flex justify-content-center align-items-center mb-4">
                                 <div class="form-outline flex-fill">
-                                    <!-- Input需要抓取的地方 -->
-                                    <input type="text" id="newTodo" class="form-control form-control-lg" />
-                                    <label class="form-label">Add some news for today?</label>
+                                    <!-- catch "items" area -->
+                                    <div class="form-floating">
+                                        <textarea class="form-control form-control-lg" placeholder="Items" id="newTodo"></textarea>
+                                        <label for="form-label">Add new todo items</label>
+                                    </div>
                                 </div>
-                                <!-- 按鈕觸發POST method -->
-                                <button onclick="addTodos()" class="btn btn-primary btn-lg ms-2">Add</button>
+                                <!-- POST button -->
+                                <button onclick="addTodos()" class="btn btn-success">Add</button>
                             </form>
-                            <!-- list-item擺放處 -->
+                            <!-- show items -->
                             <ul id="todo-item" class="list-group mb-0">
                             
                             </ul>        
@@ -52,8 +54,8 @@
         </div>
     </section>
     <script>
-        // Step 1: 取得資料庫中所有資料
-        //把database 的 id  塞入 html中
+        // Step 1: get the database information
+        //add database  id  into html
         $(document).ready(() => {
             axios.get('/api/todo').then((res) =>{
                 if(res.status == 200){
@@ -67,11 +69,10 @@
                                 <i class="fas fa-times text-primary"></i>
                             </a>
                                 </li>`)
-                        //判斷checkbox的狀態
+                        //checkbox status
                         $(`#todo-done-${element.id}`).prop('checked', element.status == 'finish'? 1:0);
                         checkTodo(element.id, element.title);
-                        
-                        //綁定checkbox的狀態
+                
                         //checked? props
                         $(`#todo-done-${element.id}`).on('click',() =>{
                             let todostatus = {};
@@ -96,8 +97,9 @@
                 }
             })
         });
-        // Step 2: 新增資料後refresh畫面 or append資料到畫面中
+        // Step 2: refresh page after adding items
         function addTodos() {
+        
         let newTodo = {}
         newTodo.title = $('#newTodo').val();
         axios.post('/api/todo', newTodo).then((res)=>{
@@ -106,7 +108,7 @@
             }
             })
         };
-        // Step 3: 完成清單要劃掉清單項目
+        // Step 3: cross out completed items
         function checkTodo(id, title) {
             let check = $(`#todo-done-${id}`).prop('checked');
             if(check){
